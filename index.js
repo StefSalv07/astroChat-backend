@@ -7,13 +7,15 @@ const PORT = process.env.PORT || 6000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 env.config();
-connectToDb();
+
 // defining routes
-const guestRoutes = require("./routes/guestRoutes");
+//routes
+// console.log("Debug 2-> index called");
 const roleRoutes = require("./routes/roleRoutes");
+const statusRoutes = require("./routes/statusRoutes");
 //using the routes
 app.use("/roles", roleRoutes);
-app.use("/guests", guestRoutes);
+app.use("/statuses", statusRoutes);
 
 app.listen(PORT, (err, success) => {
   if (err) {
@@ -22,3 +24,5 @@ app.listen(PORT, (err, success) => {
     console.log("Server is Listening on PORT", PORT);
   }
 });
+connectToDb();
+// console.log("Debug 1-> index called");
