@@ -1,0 +1,76 @@
+standard to follow
+
+// Creating The model for table from data Dictonary
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema({
+    fieldName:{
+        type:String, 
+    }
+},{
+    timeStamps:true
+})
+
+module.exports = mongoose.model('name of collections', Schemaname);
+
+// creating controller  for CRUD operations
+
+// creating an async function for  getting all the records in a collection
+import the model for creating the new schema 
+const operationModel = require(`./models/fileName)
+exports.Operationname = async ()=>{
+    const operation = await new operationModel(req.body)
+    operation.findOne({"operationName":req.body.operationName},(err,data)=>{
+        if(data == undefined || data == null){
+            //operation saving 
+            operation.save((err,data)=>{
+                if(err)
+                {
+                    res.json({
+                        message:"error saving the operation",
+                        error:err,
+                        status:500//standart error code for error 
+                    })
+                }
+                else{
+                    res.json({
+                        message:"role Saved"
+                        data:data,
+                        status:200// OK
+                    })
+                }
+                
+            })
+        }
+        else
+        {
+            
+                    res.json({
+                        status:-1,
+                        message:SWR,
+                        data:"duplicate Role"
+                    })//end of json
+                
+        }//end of else
+    })//end of outer if
+}//end of function
+------------------------------------
+creating routes in routes folder
+import express as it provides router() details 
+const express = require('express')
+const router = express.Router()
+const controller = require(../controller/operationController');
+// sub routes
+router.post()// save data
+router.get()// get data from database
+router.put() //update data in the database
+router.delete()  // delete data from the database
+router.patch() // 
+module.exports = router
+index.js
+
+const express =  require("express");
+const app = express()
+// importing Routes 
+const roleRoutes = require("../routes/roleroutes)
+//Router
+app.use("/role",roleRoutes)
