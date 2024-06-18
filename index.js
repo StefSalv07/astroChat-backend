@@ -14,10 +14,12 @@ env.config();
 const roleRoutes = require("./routes/roleRoutes");
 const statusRoutes = require("./routes/statusRoutes");
 const guestRoutes = require("./routes/guestRoutes");
+const userRoutes = require("./routes/userRoutes")
 //using the routes
 app.use("/roles", roleRoutes);
 app.use("/statuses", statusRoutes);
 app.use("/guests", guestRoutes);
+app.use("/users", userRoutes);
 
 app.listen(PORT, (err, success) => {
   if (err) {

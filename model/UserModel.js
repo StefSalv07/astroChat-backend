@@ -1,17 +1,13 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 // const { Schema } = require("zod");
 const schema = mongoose.Schema;
 
 const userSchema = new schema(
   {
-    roleId: {
-      type: schema.Types.ObjectId,
-      ref: "Role",
-      required: true,
-    },
     profilePic: {
       type: String,
-      required: true,
+      // required: true,
     },
     userName: {
       type: String,
@@ -47,8 +43,15 @@ const userSchema = new schema(
       required: true,
     },
     dateOfBirth: {
-      type: Date,
+      type: String,
       required: true,
+      validate: {
+        validator: function (v) {
+          return /^\d{2}\d{2}\d{4}$/.test(v);
+        },
+        message: (props) =>
+          `${props.value} is not a valid date of birth! Format should be ddmmyyyy.`,
+      },
     },
     langKnown: {
       type: [String],
@@ -66,21 +69,24 @@ const userSchema = new schema(
       type: String,
       required: true,
     },
-    pincode: {
-      type: Number,
-      required: true,
-    },
-    timeOfBirth: {
-      type: Date,
-      required: true,
-    },
     pinCode: {
       type: Number,
       required: true,
     },
-    isActive: {
-      type: Boolean,
-      default: true,
+    timeOfBirth: {
+      type: String,
+      required: true,
+      // validate: {
+      //   validator: function (v) {
+      //     return /^(0[1-9]|1[0-2]):[0-5][0-9]:(AM|PM)$/.test(v);
+      //   },
+      //   message: (props) =>
+      //     `${props.value} is not a valid time of birth! Format should be HH:MM AM/PM.`,
+      // },
+    },
+    pinCode: {
+      type: Number,
+      required: true,
     },
     createdAt: {
       type: String,
@@ -100,23 +106,51 @@ const userSchema = new schema(
     },
     status: {
       type: schema.Types.ObjectId,
-      default: "isActive",
+      ref: "status",
     },
     address: {
       type: String,
       required: true,
     },
+    razorpayPaymentId: {
+      type: String,
+      required: false,
+    },
+    razorpayOrderId: {
+      type: String,
+      required: false,
+    },
+    paymentStatus: {
+      type: String,
+      required: false,
+    },
+    astrologerId: [
+      {
+        type: schema.Types.ObjectId,
+        ref: "astrologer",
+        // required:true
+      },
+    ],
+    // transactionId:{
+    // type: schema.Types.ObjectId,
+    //     required: true
+    // // },
+    // paymentId: {
+    //   type: schema.Types.ObjectId,
+    //   required: true,
+    // },
   },
-  // transactionId:{
-  // type: schema.Types.ObjectId,
-  //     required: true
-  // // },
-  // paymentId: {
-  //   type: schema.Types.ObjectId,
-  //   required: true,
-  // },
   {
     timestamps: true,
   }
 );
+userSchema.pre("save", async function (next) {
+  if (this.isModified("password") || this.isNew) {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+
+    console.log("User password hashed", this.password);
+  }
+  next();
+});
 module.exports = mongoose.model("user", userSchema);
