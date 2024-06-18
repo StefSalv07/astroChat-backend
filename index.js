@@ -13,9 +13,11 @@ env.config();
 // console.log("Debug 2-> index called");
 const roleRoutes = require("./routes/roleRoutes");
 const statusRoutes = require("./routes/statusRoutes");
+const guestRoutes = require("./routes/guestRoutes");
 //using the routes
 app.use("/roles", roleRoutes);
 app.use("/statuses", statusRoutes);
+app.use("/guests", guestRoutes);
 
 app.listen(PORT, (err, success) => {
   if (err) {

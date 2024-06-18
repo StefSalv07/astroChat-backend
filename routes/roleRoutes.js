@@ -1,7 +1,7 @@
 const express = require("express");
 const roleController = require("../controller/roleController");
 const router = express.Router();
-const rolevalidation = require("../util/roleValidation");
+const rolevalidation = require("../validations/roleValidation");
 const validate = require("../middleware/zodMiddleWare");
 
 router.post("/role", validate(rolevalidation), roleController.addRole);

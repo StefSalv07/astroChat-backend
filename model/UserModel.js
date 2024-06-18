@@ -50,12 +50,10 @@ const userSchema = new schema(
       type: Date,
       required: true,
     },
-    langKnown: [
-      {
-        type: String,
-        required: true,
-      },
-    ],
+    langKnown: {
+      type: [String],
+      required: true,
+    },
     state: {
       type: String,
       required: true,
@@ -121,4 +119,4 @@ const userSchema = new schema(
     timestamps: true,
   }
 );
-module.exports = mongoose.model("users", userSchema);
+module.exports = mongoose.model("user", userSchema);
