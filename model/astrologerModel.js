@@ -1,9 +1,11 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-// const { Schema } = require("zod");
 const schema = mongoose.Schema;
+const bcrypt = require("bcrypt");
+function generateSixDigitToken() {
+  return Math.floor(100000 + Math.random() * 900000);
+}
 
-const userSchema = new schema(
+const astrologerModel = new schema(
   {
     profilePic: {
       type: String,
@@ -13,23 +15,15 @@ const userSchema = new schema(
       type: String,
       required: true,
     },
-    firstName: {
-      type: String,
-      required: true,
-    },
-    lastName: {
-      type: String,
-      required: true,
-    },
     email: {
       type: String,
       required: true,
     },
-    phone: {
-      type: Number,
+    password: {
+      type: String,
       required: true,
     },
-    password: {
+    phone: {
       type: String,
       required: true,
     },
@@ -68,17 +62,6 @@ const userSchema = new schema(
       type: Number,
       required: true,
     },
-    timeOfBirth: {
-      type: String,
-      required: true,
-      // validate: {
-      //   validator: function (v) {
-      //     return /^(0[1-9]|1[0-2]):[0-5][0-9]:(AM|PM)$/.test(v);
-      //   },
-      //   message: (props) =>
-      //     `${props.value} is not a valid time of birth! Format should be HH:MM AM/PM.`,
-      // },
-    },
     createdAt: {
       type: String,
       default: function () {
@@ -95,53 +78,88 @@ const userSchema = new schema(
         return `${date}-${month}-${year} ${strHours}:${minutes} ${ampm}`;
       },
     },
-    status: {
-      type: schema.Types.ObjectId,
-      ref: "status",
-    },
+
     address: {
       type: String,
       required: true,
     },
-    razorpayPaymentId: {
-      type: String,
-      required: false,
+    primarySkills: {
+      type: [String],
+      required: true,
     },
-    razorpayOrderId: {
-      type: String,
-      required: false,
+    allSkills: {
+      type: [String],
+      required: true,
     },
-    paymentStatus: {
-      type: String,
-      required: false,
+    expirence: {
+      type: Number,
+      required: true,
     },
-    astrologerId: [
-      {
-        type: schema.Types.ObjectId,
-        ref: "astrologer",
-        // required:true
-      },
-    ],
-    // transactionId:{
-    // type: schema.Types.ObjectId,
-    //     required: true
-    // // },
-    // paymentId: {
-    //   type: schema.Types.ObjectId,
-    //   required: true,
-    // },
+    hoursContribution: {
+      type: Number,
+      required: true,
+    },
+    pricePerMin: {
+      type: Number,
+      required: true,
+    },
+    chatDoneWith: {
+      type: [schema.Types.ObjectId],
+      ref: "user",
+    },
+    serviceType: {
+      type: schema.Types.ObjectId,
+      ref: "serviceType",
+    },
+    whyOnBoard: {
+      type: [String],
+      required: true,
+    },
+    mainSourceOfIncome: {
+      type: [String],
+      required: true,
+    },
+    refFrom: {
+      type: String,
+      required: true,
+    },
+    learnedAstrologyFrom: {
+      type: String,
+      required: true,
+    },
+    links: {
+      type: [String],
+      required: true,
+    },
+    minExpSal: {
+      type: Number,
+    },
+    longBio: {
+      type: String,
+      required: true,
+    },
+
+    qualifications: {
+      type: [String],
+      required: true,
+    },
+    tokenNumber: {
+      type: Number,
+      required: true,
+      default: generateSixDigitToken,
+      unique: true,
+    },
   },
   {
     timestamps: true,
   }
 );
-userSchema.pre("save", async function (next) {
+astrologerModel.pre("save", async function (next) {
   if (this.isModified("password") || this.isNew) {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
-
     console.log("User password hashed", this.password);
   }
   next();
 });
-module.exports = mongoose.model("user", userSchema);
+module.exports = mongoose.model("astrologer", astrologerModel);
