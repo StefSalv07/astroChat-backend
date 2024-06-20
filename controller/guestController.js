@@ -40,7 +40,7 @@ exports.addGuest = async (req, res) => {
             });
           });
       } else {
-        res.json({
+        res.status(500).json({
           message: "Guest User already exists",
           status: 500,
         });
