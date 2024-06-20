@@ -147,49 +147,72 @@ exports.deleteUserById = async (req, res) => {
     });
 };
 // console.log("Delete User By Id called")
-exports.login = async (req, res) => {
+exports.login = (req, res) => {
   const { email, password } = req.body;
 
-  userModel
+  // Find astrologer by email
+  astrologerModel
     .findOne({ email: req.body.email })
-    .then((user) => {
-      if (!user) {
-        return res.json({
-          message: "User not found",
-          status: 400,
+    .then((astrologer) => {
+      // If astrologer is not found, return error
+      if (!astrologer) {
+        return res.status(404).json({
+          message: "Astrologer not found",
+          status: 404,
         });
       }
 
+      // Compare passwords
       bcrypt
-        .compare(password, user.password)
+        .compare(password, astrologer.password)
         .then((isMatch) => {
+          // If passwords don't match, return error
           if (!isMatch) {
-            return res.json({
+            return res.status(400).json({
               message: "Invalid credentials",
               status: 400,
             });
           }
+
+          // Send login success email
           const loginSuccessEmailTemplate = getLoginSuccessEmailTemplate();
-          sendMail(user.email, "Login Successful", loginSuccessEmailTemplate);
-          res.json({
-            message: "Login successful",
-            status: 200,
-            data: user,
-          });
+          sendMail(
+            astrologer.email,
+            "Login Successful",
+            loginSuccessEmailTemplate
+          )
+            .then(() => {
+              // Return success response with astrologer data
+              res.status(200).json({
+                message: "Login successful",
+                status: 200,
+                data: astrologer,
+              });
+            })
+            .catch((emailErr) => {
+              console.error("Failed to send login success email:", emailErr);
+              res.status(500).json({
+                message: "Failed to send login success email",
+                status: 500,
+                error: emailErr.message,
+              });
+            });
         })
-        .catch((err) => {
-          res.json({
+        .catch((bcryptErr) => {
+          console.error("Error comparing passwords:", bcryptErr);
+          res.status(500).json({
             message: "Error comparing passwords",
-            status: 400,
-            error: err.message,
+            status: 500,
+            error: bcryptErr.message,
           });
         });
     })
-    .catch((err) => {
-      res.json({
-        message: "Error finding user",
-        status: 400,
-        error: err.message,
+    .catch((findErr) => {
+      console.error("Error finding astrologer:", findErr);
+      res.status(500).json({
+        message: "Error finding astrologer",
+        status: 500,
+        error: findErr.message,
       });
     });
 };

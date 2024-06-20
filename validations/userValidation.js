@@ -29,10 +29,6 @@ const userValidation = zod.object({
       .string()
       .min(10, "The minimum length of phone should be 10")
       .max(15, "The maximum length of phone should be 15"),
-    countryCode: zod
-      .string()
-      .min(1, "The minimum length of countryCode should be 1")
-      .max(5, "The maximum length of countryCode should be 5"),
     password: zod
       .string()
       .min(8, "The minimum length of password should be 8")
