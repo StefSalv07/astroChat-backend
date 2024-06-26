@@ -1,76 +1,66 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 // const { Schema } = require("zod");
+const jwt=require('jsonwebtoken');
 const schema = mongoose.Schema;
 
 const userSchema = new schema(
   {
     profilePic: {
       type: String,
-      // required: true,
+      default:
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
     },
     userName: {
       type: String,
-      required: true,
     },
     firstName: {
       type: String,
-      required: true,
     },
     lastName: {
       type: String,
-      required: true,
     },
     email: {
       type: String,
-      required: true,
     },
     phone: {
       type: Number,
-      required: true,
     },
     password: {
       type: String,
-      required: true,
     },
     gender: {
       type: String,
-      required: true,
     },
     dateOfBirth: {
       type: String,
-      required: true,
-      validate: {
-        validator: function (v) {
-          return /^\d{2}\d{2}\d{4}$/.test(v);
-        },
-        message: (props) =>
-          `${props.value} is not a valid date of birth! Format should be ddmmyyyy.`,
-      },
+      // required: true,
+      // validate: {
+      //   validator: function (v) {
+      //     return /^\d{2}\d{2}\d{4}$/.test(v);
+      //   },
+      //   message: (props) =>
+      //     `${props.value} is not a valid date of birth! Format should be ddmmyyyy.`,
+      // },
     },
     langKnown: {
       type: [String],
-      required: true,
     },
     state: {
       type: String,
-      required: true,
     },
     city: {
       type: String,
-      required: true,
     },
     country: {
       type: String,
-      required: true,
     },
     pinCode: {
       type: Number,
-      required: true,
     },
     timeOfBirth: {
       type: String,
-      required: true,
+
       // validate: {
       //   validator: function (v) {
       //     return /^(0[1-9]|1[0-2]):[0-5][0-9]:(AM|PM)$/.test(v);
@@ -101,7 +91,6 @@ const userSchema = new schema(
     },
     address: {
       type: String,
-      required: true,
     },
     razorpayPaymentId: {
       type: String,
@@ -144,4 +133,16 @@ userSchema.pre("save", async function (next) {
   }
   next();
 });
+userSchema.methods.generateAccessToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+      email: this.email,
+      name: this.name,
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
+  );
+};
+
 module.exports = mongoose.model("user", userSchema);

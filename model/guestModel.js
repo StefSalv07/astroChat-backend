@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const jwt =require('jsonwebtoken');
 const schema = mongoose.Schema;
 const guestSchema = new schema(
   {
@@ -46,4 +47,17 @@ guestSchema.pre("save", function (next) {
   }
   next();
 });
+
+guestSchema.methods.generateAccessToken = function() {
+  return jwt.sign(
+    {
+      _id: this._id,
+      email: this.email,
+      name: this.name
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
+  );
+};
+
 module.exports = mongoose.model("guest", guestSchema);

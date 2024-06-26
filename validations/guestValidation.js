@@ -6,13 +6,13 @@ const guestValidation = zod.object({
       .string()
       .min(2, "The minimum length of name should be 2")
       .max(50, "The maximum length of name should be 50"),
-    email: zod
-      .string()
-      .email("Invalid email format")
-      .regex(
-        /^[a-zA-Z0-9._%+-]+@gmail\.com$/,
-        "Email must be a valid Gmail address"
-      ),
+    // email: zod
+    //   .string()
+    //   .email("Invalid email format")
+    //   .regex(
+    //     /^[a-zA-Z0-9._%+-]+@gmail\.com$/,
+    //     "Email must be a valid Gmail address"
+    //   ),
     // otp: zod.string().refine((value) => /^[0-9]{6}$/.test(value), {
     //   message: "OTP must be a 6-digit number",
     // }),

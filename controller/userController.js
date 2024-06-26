@@ -262,7 +262,7 @@ exports.loginViaEmail = (req, res) => {
     });
 };
 // console.log("Login called")
-exports.logout = async (req, res) => {};
+
 exports.verifyOtp = (req, res) => {
   const { email, otp } = req.body;
 
@@ -451,3 +451,52 @@ exports.changePassword = async (req, res) => {
 // console.log("Logout called")
 // console.log("Verify OTP called")
 // console.log("User Controller.js")
+
+exports.google = async (req, res) => {
+  const { email, name, googlePhotoUrl } = req.body;
+  try {
+    let user = await userModel.findOne({ email }).select("-password");
+    //login
+    if (user) {
+      const token = user.generateAccessToken();
+      return res
+        .status(200)
+        .cookie("accessToken", token, {
+          httpOnly: true,
+        })
+        .json({ data: user, message: "User sign-in successful", status: 200 });
+    } else {
+      //signup
+
+      const generatedPassword =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8);
+
+      const newUser = new userModel({
+        userName: name.toLowerCase(),
+        email,
+        password: generatedPassword,
+        profilePic: googlePhotoUrl,
+      });
+
+      await newUser.save();
+      user = await userModel.findById(newUser._id).select("-password");
+
+      const token = user.generateAccessToken();
+
+      return res
+        .status(200)
+        .cookie("accessToken", token, {
+          httpOnly: true,
+        })
+        .json({ data: user, message: "User sign-Up successful", status: 200 });
+    }
+  } catch (error) {
+    console.error("Error goodle signup:", error);
+    res.status(500).json({
+      message: "Error google signup",
+      status: 500,
+      error: error.message,
+    });
+  }
+};

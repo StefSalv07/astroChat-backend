@@ -63,7 +63,7 @@ exports.verifyOtp = async (req, res) => {
     // Find the guest by OTP and ensure OTP is valid and not expired
     const guest = await guestModel.findOne({
       otp: otp,
-      //   otpExpires: { $gt: Date.now() },
+      otpExpires: { $gt: Date.now() }, // Ensure OTP is not expired
     });
 
     if (!guest) {
@@ -85,7 +85,17 @@ exports.verifyOtp = async (req, res) => {
       welcomeEmailTemplate
     );
 
-    // Respond with success message
+    // Authenticate user by generating JWT token
+    const token = guest.generateAccessToken();
+
+    // Set cookie with JWT token
+    res.cookie("accessToken", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 3600000, // 1 hour
+    });
+
+    // Respond with success message and user data
     res.status(200).json({
       message: "OTP verified successfully. Welcome email sent.",
       status: 200,
@@ -182,4 +192,5 @@ exports.deleteGuestById = async (req, res) => {
       });
     });
 };
+
 //console.log("guest controller ended")

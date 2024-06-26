@@ -8,7 +8,7 @@ function generateSixDigitToken() {
 const astrologerModel = new schema(
   {
     profilePic: {
-      type: String,
+      // type: String,
       // required: true,
     },
     userName: {
@@ -31,17 +31,17 @@ const astrologerModel = new schema(
       type: String,
       required: true,
     },
-    dateOfBirth: {
-      type: String,
-      required: true,
-      validate: {
-        validator: function (v) {
-          return /^\d{2}\d{2}\d{4}$/.test(v);
-        },
-        message: (props) =>
-          `${props.value} is not a valid date of birth! Format should be ddmmyyyy.`,
-      },
-    },
+    // dateOfBirth: {
+    //   type: String,
+    //   required: true,
+    //   validate: {
+    //     validator: function (v) {
+    //       return /^\d{2}\d{2}\d{4}$/.test(v);
+    //     },
+    //     message: (props) =>
+    //       `${props.value} is not a valid date of birth! Format should be ddmmyyyy.`,
+    //   },
+    // },
     langKnown: {
       type: [String],
       required: true,
@@ -107,16 +107,19 @@ const astrologerModel = new schema(
       type: [schema.Types.ObjectId],
       ref: "user",
     },
+    // serviceType: {
+    //   type: schema.Types.ObjectId,
+    //   ref: "serviceType",
+    // },
     serviceType: {
-      type: schema.Types.ObjectId,
-      ref: "serviceType",
+      type: [String],
     },
     whyOnBoard: {
-      type: [String],
+      type: String,
       required: true,
     },
     mainSourceOfIncome: {
-      type: [String],
+      type: String,
       required: true,
     },
     refFrom: {
