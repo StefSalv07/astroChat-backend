@@ -235,14 +235,13 @@ exports.login = (req, res) => {
     });
 };
 
-
 exports.loginViaEmail = async (req, res) => {
   const { email } = req.body;
   console.log("Email for login via email", email);
 
   try {
     // Find astrologer by email
-    const astrologer = await astrologerModel.findOne({ email });
+    const astrologer = await astrologerModel.findOne({ email:req.body.email });
 
     if (!astrologer) {
       return res.status(400).json({

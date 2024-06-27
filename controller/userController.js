@@ -262,6 +262,52 @@ exports.loginViaEmail = (req, res) => {
     });
 };
 // console.log("Login called")
+exports.loginViaEmail = (req, res) => {
+  const { email } = req.body;
+
+  // Find user by email
+  userModel
+    .findOne({ email: req.body.email })
+    .then((user) => {
+      if (!user) {
+        return res.json({
+          message: "User not found",
+          status: 400,
+        });
+      }
+
+      // Generate OTP
+      const otpValue = generateOTP();
+
+      // Save OTP to OTP collection
+      const otp = new otpModel({
+        userId: user._id,
+        otp: otpValue,
+      });
+
+      return otp.save();
+    })
+    .then((savedOtp) => {
+      // Send OTP via email
+      const otpEmailTemplate = getOtpEmailTemplate(savedOtp.otp);
+      return sendMail(email, "Login OTP", otpEmailTemplate);
+    })
+    .then(() => {
+      res.json({
+        message: "OTP sent to email",
+        status: 200,
+        email: email,
+      });
+    })
+    .catch((err) => {
+      res.json({
+        message: "Error sending OTP",
+        status: 400,
+        error: err.message,
+      });
+    });
+};
+// console.log("Login called")
 exports.logout = async (req, res) => {};
 exports.verifyOtp = (req, res) => {
   const { email, otp } = req.body;
