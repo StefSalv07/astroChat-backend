@@ -17,7 +17,7 @@ exports.addGuest = async (req, res) => {
         const guest = new guestModel({
           email: req.body.email,
           phone: req.body.phone,
-          name: req.body.name,
+          userName: req.body.userName,
           otp: otp,
           otpExpires: Date.now() + 300,
         });
@@ -78,7 +78,7 @@ exports.verifyOtp = async (req, res) => {
     const savedGuest = await guest.save();
 
     // Send welcome email
-    const welcomeEmailTemplate = getWelcomeEmailTemplate(savedGuest.name);
+    const welcomeEmailTemplate = getWelcomeEmailTemplate(savedGuest.userName);
     await sendMail(
       savedGuest.email,
       "Welcome to Our App",

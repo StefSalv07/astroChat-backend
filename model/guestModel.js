@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const jwt =require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 const schema = mongoose.Schema;
 const guestSchema = new schema(
   {
@@ -11,12 +11,16 @@ const guestSchema = new schema(
       type: String,
       required: true,
     },
-    name: {
+    userName: {
       type: String,
       required: true,
     },
     otp: {
       type: Number,
+    },
+    role: {
+      type: String,
+      default: "guest",
     },
     otpExpires: { type: Date },
     createdAt: {
@@ -40,6 +44,7 @@ const guestSchema = new schema(
     timestamps: true,
   }
 );
+
 guestSchema.pre("save", function (next) {
   const now = new Date();
   if (this.isNew || this.isModified("otp")) {
@@ -48,12 +53,12 @@ guestSchema.pre("save", function (next) {
   next();
 });
 
-guestSchema.methods.generateAccessToken = function() {
+guestSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
       _id: this._id,
       email: this.email,
-      name: this.name
+      name: this.name,
     },
     process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
