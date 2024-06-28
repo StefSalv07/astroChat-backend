@@ -3,7 +3,7 @@ const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
-  secure: false, // Use `true` for port 465, `false` for all other ports
+  secure: false,
   auth: {
     user: "shivamshah.sus@gmail.com",
     pass: "wrcrewyjklqrisvs",
@@ -532,6 +532,7 @@ const sendMail = (to, subject, html) => {
 
   return transporter.sendMail(mailOptions);
 };
+
 // getOtpEmailTemplateForAstrologers
 
 module.exports = {

@@ -10,6 +10,7 @@ const {
   getOtpEmailTemplate,
   getPasswordChangeEmailTemplate,
 } = require("../util/mailer");
+
 exports.signup = async (req, res) => {
   const user = new userModel(req.body);
 
@@ -57,7 +58,6 @@ exports.signup = async (req, res) => {
       });
     });
 };
-
 // console.log("Signup called")
 exports.getAllUsers = async (req, res) => {
   await userModel
