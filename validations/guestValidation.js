@@ -2,7 +2,7 @@ const zod = require("zod");
 
 const guestValidation = zod.object({
   body: zod.object({
-    name: zod
+    userName: zod
       .string()
       .min(2, "The minimum length of name should be 2")
       .max(50, "The maximum length of name should be 50"),

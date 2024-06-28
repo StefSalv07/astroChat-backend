@@ -69,6 +69,10 @@ const userSchema = new schema(
       //     `${props.value} is not a valid time of birth! Format should be HH:MM AM/PM.`,
       // },
     },
+    role:{
+      type: String,
+      default:"user"
+    },
     createdAt: {
       type: String,
       default: function () {
