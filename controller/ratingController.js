@@ -4,11 +4,15 @@ const mongoose = require("mongoose");
 exports.addRating = async (req, res) => {
   try {
     const { userId, review, rating, astroId } = req.body;
-    const newRating = new Rating({ userId, review, rating ,astroId});
+    const newRating = new Rating({ userId, review, rating, astroId });
     await newRating.save();
     res
       .status(201)
-      .json({ data: newRating, message: "rating added successfully" });
+      .json({
+        data: newRating,
+        message: "rating added successfully",
+        status: 200,
+      });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -20,24 +24,24 @@ exports.getRatingByAstrologerId = async (req, res) => {
 
     const ratings = await Rating.aggregate([
       {
-        $match: { astroId: new mongoose.Types.ObjectId(astroId) }
+        $match: { astroId: new mongoose.Types.ObjectId(astroId) },
       },
       {
         $lookup: {
-          from: 'users',
-          localField: 'userId',
-          foreignField: '_id',
-          as: 'userDetails',
-        }
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "userDetails",
+        },
       },
       {
         $project: {
           astroId: 1,
-          user: { $arrayElemAt: ['$userDetails', 0] },
+          user: { $arrayElemAt: ["$userDetails", 0] },
           review: 1,
-          rating: 1
-        }
-      }
+          rating: 1,
+        },
+      },
     ]);
 
     if (!ratings || ratings.length === 0) {

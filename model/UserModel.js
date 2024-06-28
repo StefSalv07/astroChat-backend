@@ -14,12 +14,12 @@ const userSchema = new schema(
     userName: {
       type: String,
     },
-    firstName: {
-      type: String,
-    },
-    lastName: {
-      type: String,
-    },
+    // firstName: {
+    //   type: String,
+    // },
+    // lastName: {
+    //   type: String,
+    // },
     email: {
       type: String,
     },
