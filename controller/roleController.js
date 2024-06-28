@@ -1,4 +1,5 @@
 const roleModel = require("../model/roleModel");
+// console.log("Debug - 1.1 -> Role Controller Called");
 
 exports.addRole = (req, res) => {
   const role = new roleModel(req.body);
@@ -31,6 +32,8 @@ exports.addRole = (req, res) => {
 };
 // add roles done
 
+// console.log("Debug - 1.2 -> Add Role  Called");
+
 exports.getAllRoles = (req, res) => {
   roleModel
     .find()
@@ -50,8 +53,8 @@ exports.getAllRoles = (req, res) => {
     });
 };
 
-// get all roles Done
-// console.log("roleController");
+// console.log("Debug - 1.3 -> Get All Roles  Called");
+
 exports.getRoleById = (req, res) => {
   const id = req.params.id;
   console.log(id);
@@ -79,6 +82,8 @@ exports.getRoleById = (req, res) => {
       });
     });
 };
+
+// / console.log("Debug - 1.3 -> Get role By Id   Called");
 exports.deleteRoleById = (req, res) => {
   const id = req.body.id;
 
@@ -104,6 +109,8 @@ exports.deleteRoleById = (req, res) => {
       });
     });
 };
+
+// console.log("Debug - 1.4 -> Delete Role By Id   Called");
 
 exports.updateRole = (req, res) => {
   const id = req.params.id;
@@ -132,3 +139,6 @@ exports.updateRole = (req, res) => {
       });
     });
 };
+
+// console.log("Debug - 1.5 -> Update Role By Id   Called");
+// console.log("Debug - 2 -> Role Controller Called");

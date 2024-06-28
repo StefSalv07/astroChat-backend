@@ -1,14 +1,13 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const roleSchema = new Schema(
+const statusSchema = new Schema(
   {
-    roleName: {
+    statusName: {
       type: String,
       unique: true,
       lowercase: true,
-      default: "user",
     },
-    roleDesc: {
+    statusDesc: {
       type: String,
     },
   },
@@ -16,4 +15,4 @@ const roleSchema = new Schema(
     timestamps: true,
   }
 );
-module.exports = mongoose.model("roles", roleSchema);
+module.exports = mongoose.model("status", statusSchema);

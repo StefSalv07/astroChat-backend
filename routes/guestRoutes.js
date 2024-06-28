@@ -1,0 +1,12 @@
+const express = require("express");
+const router = express.Router();
+const guestController = require("../controller/guestController");
+const guestValidation = require("../validations/guestValidation");
+const validate = require("../middleware/zodMiddleWare");
+router.post("/guest",validate(guestValidation) ,guestController.addGuest);
+router.get("/guest", guestController.getAllGuests);
+router.get("/guest/:id", guestController.getGuestById);
+router.put("/guest/:id", guestController.updateGuest);
+router.delete("/guest/:id", guestController.deleteGuestById);
+router.post("/guest/verify", guestController.verifyOtp);
+module.exports = router;
