@@ -22,7 +22,7 @@ exports.signup = async (req, res) => {
           .save()
           .then((data) => {
             const welcomeEmailTemplate = getWelcomeEmailTemplate(
-              data.firstName
+              data.userName
             );
             sendMail(
               data.email,
@@ -34,7 +34,7 @@ exports.signup = async (req, res) => {
               status: 200,
               data: data,
             });
-            console.log("User=>", data);
+            // console.log("User=>", data);
           })
           .catch((err) => {
             res.json({
@@ -147,29 +147,101 @@ exports.deleteUserById = async (req, res) => {
     });
 };
 // console.log("Delete User By Id called")
+// exports.login = (req, res) => {
+//   const { email, password } = req.body;
+
+//   // Find astrologer by email
+//   astrologerModel
+//     .findOne({ email: req.body.email })
+//     .then((astrologer) => {
+//       // If astrologer is not found, return error
+//       if (!astrologer) {
+//         return res.status(404).json({
+//           message: "Astrologer not found",
+//           status: 404,
+//         });
+//       }
+
+//       // Compare passwords
+//       bcrypt
+//         .compare(password, astrologer.password)
+//         .then((isMatch) => {
+//           // If passwords don't match, return error
+//           if (!isMatch) {
+//             return res.status(400).json({
+//               message: "Invalid credentials",
+//               status: 400,
+//             });
+//           }
+
+//           // Send login success email
+//           const loginSuccessEmailTemplate = getLoginSuccessEmailTemplate();
+//           sendMail(
+//             astrologer.email,
+//             "Login Successful",
+//             loginSuccessEmailTemplate
+//           )
+//             .then(() => {
+//               // Return success response with astrologer data
+//               res.status(200).json({
+//                 message: "Login successful",
+//                 status: 200,
+//                 data: astrologer,
+//               });
+//             })
+//             .catch((emailErr) => {
+//               console.error("Failed to send login success email:", emailErr);
+//               res.status(500).json({
+//                 message: "Failed to send login success email",
+//                 status: 500,
+//                 error: emailErr.message,
+//               });
+//             });
+//         })
+//         .catch((bcryptErr) => {
+//           console.error("Error comparing passwords:", bcryptErr);
+//           res.status(500).json({
+//             message: "Error comparing passwords",
+//             status: 500,
+//             error: bcryptErr.message,
+//           });
+//         });
+//     })
+//     .catch((findErr) => {
+//       console.error("Error finding astrologer:", findErr);
+//       res.status(500).json({
+//         message: "Error finding astrologer",
+//         status: 500,
+//         error: findErr.message,
+//       });
+//     });
+// };
+
+
 exports.login = (req, res) => {
+  console.log("under login..");
   const { email, password } = req.body;
 
   // Find astrologer by email
-  astrologerModel
-    .findOne({ email: req.body.email })
-    .then((astrologer) => {
+  userModel
+    .findOne({ email })
+    .then((user) => {
       // If astrologer is not found, return error
-      if (!astrologer) {
+      if (!user) {
         return res.status(404).json({
-          message: "Astrologer not found",
+          message: "user not found",
           status: 404,
         });
       }
 
       // Compare passwords
       bcrypt
-        .compare(password, astrologer.password)
+        .compare(password, user.password)
         .then((isMatch) => {
           // If passwords don't match, return error
           if (!isMatch) {
             return res.status(400).json({
-              message: "Invalid credentials",
+              message: "Invalid password",
               status: 400,
             });
           }
@@ -177,16 +249,16 @@ exports.login = (req, res) => {
           // Send login success email
           const loginSuccessEmailTemplate = getLoginSuccessEmailTemplate();
           sendMail(
-            astrologer.email,
+            user.email,
             "Login Successful",
             loginSuccessEmailTemplate
           )
             .then(() => {
-              // Return success response with astrologer data
+              // Return success response with user data
               res.status(200).json({
                 message: "Login successful",
                 status: 200,
-                data: astrologer,
+                data: user,
               });
             })
             .catch((emailErr) => {
@@ -208,14 +280,17 @@ exports.login = (req, res) => {
         });
     })
     .catch((findErr) => {
-      console.error("Error finding astrologer:", findErr);
+      console.error("Error finding user:", findErr);
       res.status(500).json({
-        message: "Error finding astrologer",
+        message: "Error finding user",
         status: 500,
         error: findErr.message,
       });
     });
 };
+
+
+
 exports.loginViaEmail = (req, res) => {
   const { email } = req.body;
 
